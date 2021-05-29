@@ -3,21 +3,8 @@
 -- Engineer: Docan Tudor, Farcas Rares, bossi  
 -- 
 -- Create Date: 05/29/2021 05:29:40 PM
--- Design Name: 
 -- Module Name: fibonacci - Behavioral
--- Project Name: 
--- Target Devices: 
--- Tool Versions: 
--- Description: 
--- 
--- Dependencies: 
--- 
--- Revision:
--- Revision 0.01 - File Created
--- Additional Comments:
--- 
 ----------------------------------------------------------------------------------
---farki yag
 
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
