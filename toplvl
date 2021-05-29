@@ -1,0 +1,84 @@
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+use IEEE.STD_LOGIC_UNSIGNED.ALL;
+use IEEE.STD_LOGIC_ARITH.ALL;
+
+entity toplevel is
+ Port ( clk:in STD_LOGIC;
+        btn:in STD_LOGIC_VECTOR(3 downto 3);
+        a_to_g: out STD_LOGIC_VECTOR(6 downto 0);
+        an:out STD_LOGIC_VECTOR(3 downto 0);
+        dp:out STD_LOGIC);
+end toplevel;
+
+architecture Behavioral of toplevel is
+component fibonacci is
+    Port ( clk : in STD_LOGIC;
+           clr : in STD_LOGIC;
+           f : out STD_LOGIC_VECTOR (13 downto 0));
+end component;
+
+
+component binbcd14 is
+port( b: in STD_LOGIC_VECTOR(13 downto 0);
+      p:out STD_LOGIC_VECTOR(16 downto 0)
+
+);
+end component binbcd14;
+
+component bcd7seg is 
+port(
+x:in STD_LOGIC_VECTOR(15 downto 0);
+clk:in STD_LOGIC;
+clr: in STD_LOGIC;
+a_to_g: out STD_LOGIC_VECTOR(6 downto 0);
+an:out STD_LOGIC_VECTOR(3 downto 0);
+dp: out STD_LOGIC
+
+
+);
+end component;
+
+signal cnt: std_logic_vector(27 downto 0):=x"0000000";
+signal clk_div: std_logic;
+signal p: STD_LOGIC_VECTOR(16 downto 0);
+signal b:STD_LOGIC_VECTOR(13 downto 0);
+signal clr:STD_LOGIC;
+
+begin
+--2FA F07F - 49.999.999 in hex
+process(clk,clr)
+begin
+    if clr ='1' then
+    cnt<=x"0000000";
+    elsif rising_edge(clk) then
+    if cnt=x"2FAF07F" then
+    cnt<= x"0000000";
+    clk_div<='1';
+    else 
+    cnt<= cnt+1;
+    clk_div<='0';
+    end if;
+    end if;
+    
+    
+end process;
+clr<= btn(3);
+
+FIB:fibonacci port map(
+                 clk=>clk_div,
+                 clr=>clr,
+                 f=>b);
+BCD14:binbcd14 port map(b=>b,p=>p);
+
+BCD7: bcd7seg port map(x=>p(15 downto 0),
+                            clk=>clk_div, 
+                            clr=>clr,
+                            a_to_g=>a_to_g,
+                            an=>an,
+                            dp=>dp);             
+
+
+
+
+end Behavioral;
