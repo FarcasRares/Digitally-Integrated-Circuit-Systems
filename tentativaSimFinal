@@ -1,0 +1,33 @@
+
+
+
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+
+
+
+entity simfib is
+--  Port ( );
+end simfib;
+
+architecture Behavioral of simfib is
+component toplevel is
+ Port ( clk:in STD_LOGIC;
+        btn:in STD_LOGIC_VECTOR(3 downto 3);
+        a_to_g: out STD_LOGIC_VECTOR(6 downto 0);
+        an:out STD_LOGIC_VECTOR(3 downto 0);
+        dp:out STD_LOGIC);
+end component;
+signal clk:std_logic;
+signal a_to_g:STD_LOGIC_VECTOR(6 downto 0);
+signal an:STD_LOGIC_VECTOR( 3 downto 0);
+signal btn:STD_LOGIC_VECTOR(3 downto 0 );
+begin
+UUT: toplevel port map(clk=>clk,btn =>btn,a_to_g=>a_to_g,an=>an);
+process begin
+clk<='0'; wait for 10ns;
+clk<='1'; wait for 10ns;
+end process;
+
+
+end Behavioral;
