@@ -1,39 +1,39 @@
-
+-- Farcas Rares, Docan Tudor, Samuel Doroscan
 
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.STD_LOGIC_UNSIGNED.ALL;
 use IEEE.STD_LOGIC_ARITH.ALL;
 
+
 entity toplevel is
- Port ( clk:in STD_LOGIC;
-        a_to_g: out STD_LOGIC_VECTOR(27 downto 0);
-        dp:out STD_LOGIC);
+ Port (clk: in STD_LOGIC;
+       clear: in STD_LOGIC;
+       BCDOUT: out STD_LOGIC_VECTOR(27 downto 0);
+       clr:in STD_LOGIC
+       );
 end toplevel;
 
-architecture Behavioral of toplevel is
+ architecture Behavioral of toplevel is
+component BCD7 is
+Port ( BCDin : in STD_LOGIC_VECTOR (3 downto 0);
+        bcdOUT:out STD_LOGIC_VECTOR (6 downto 0);
+        clk:in std_logic);
+end component BCD7;
 
-component bcd7 is
-    Port ( a : in STD_LOGIC_VECTOR (3 downto 0);
-           a_to_g : out STD_LOGIC_VECTOR (6 downto 0);
-           clk : in STD_LOGIC);
-end component bcd7;
-
-component fib is
+component fibonacci is
     Port ( clk : in STD_LOGIC;
-           f : out STD_LOGIC_VECTOR (13 downto 0);
-           clr : in STD_LOGIC);
-end component fib;
-signal clk_div: std_logic;
+           clr : in STD_LOGIC;
+           f : out STD_LOGIC_VECTOR (13 downto 0));
+end component fibonacci;
+
+signal fibOUT:std_logic_vector( 13 downto 0); --semnalele de iesire din FIB
 signal cnt: std_logic_vector(27 downto 0):=x"0000000";
-signal total: std_logic_vector(27 downto 0);
-signal clr:std_logic;
-signal outBCD1,outBCD2,outBCD3,outBCD4:std_logic_vector(6 downto 0);
-signal outFIB:std_logic_vector(13 downto 0);
-signal a:std_logic_vector(3 downto 0);
+signal clk_div: std_logic;
+signal allOUT:std_LOGIC_VECTOR(27 downto 0);
+signal BCdin:std_logic_vector(3 downto 0);
+signal BCDout1,BCDout2,BCDout3,BCDout4:std_logic_vector(6 downto 0);
 begin
-
-
 process(clk,clr)
 begin
     if clr ='1' then
@@ -50,38 +50,42 @@ begin
   --divizorul de frecventa, cu raport de divizare 50Mhz - 1   
     
 end process;
-generatorfib: fib port map(clk=>clk_div,clr=>clr,f=>outFIB);
-U1: bcd7 port map(a(0)=>outFIB(0),
-a(1)=>outFIB(1),
-a(2)=>outFIB(2),
-a(3)=>outFIB(3),
-a_to_g=>outBCD1,
-clk=>clk_div
-);
-U2: bcd7 port map(a(0)=>outFIB(4),
-a(1)=>outFIB(5),
-a(2)=>outFIB(6),
-a(3)=>outFIB(7),
-a_to_g=>outBCD2,
-clk=>clk_div
-);
+generatorfib: fibonacci port map(clk=>clk_div,clr=>'0',f=>fibOUT);
+U1: BCD7 port map(
+BCDin(0)=>fibOUT(0),
+BCDin(1)=>fibOUT(1),
+BCDin(2)=>fibOUT(2),
+BCDin(3)=>fibOUT(3),
+BCDout=>BCDout1,
 
-U3: bcd7 port map(a(0)=>outFIB(8),
-a(1)=>outFIB(9),
-a(2)=>outFIB(10),
-a(3)=>outFIB(11),
-a_to_g=>outBCD3,
 clk=>clk_div
 );
-
-U4: bcd7 port map(a(0)=>outFIB(12),
-a(1)=>outFIB(13),
-a(2)=>'0',
-a(3)=>'0',
+U2: BCD7 port map(
+BCDin(0)=>fibOUT(4),
+BCDin(1)=>fibOUT(5),
+BCDin(2)=>fibOUT(6),
+BCDin(3)=>fibOUT(7),
+BCDout=>BCDout2,
+clk=>clk_div
+);
+U3: BCD7 port map(
+BCDin(0)=>fibOUT(8),
+BCDin(1)=>fibOUT(9),
+BCDin(2)=>fibOUT(10),
+BCDin(3)=>fibOUT(11),
+BCDout=>BCDout3,
+clk=>clk_div
+);
+U4: BCD7 port map(
+BCDin(0)=>fibOUT(12),
+BCDin(1)=>fibOUT(13),
+BCDin(2)=>'0',
+BCDin(3)=>'0',
 clk=>clk_div,
-a_to_g=>outBCD4
+BCDout=>BCDout4
 );
-total <= outBCD1 & outBCD2& outBCD3&outBCD4;
+allOUT<= BCDout1 & BCDout2 & BCDout3 & BCDout4; --concatenare de biti 
+BCDOUT<=allOUT; 
 
 
 end Behavioral;
