@@ -1,9 +1,3 @@
-----------------------------------------------------------------------------------
--- Company: F&D Exception Software
--- Engineer: Docan Tudor, Farcas Rares,Sami bossi  
-
-
-
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.STD_LOGIC_unsigned.all;
